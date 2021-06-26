@@ -5,10 +5,7 @@
  * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
  */
 
-const express = require('express');
-const router  = express.Router();
-
-module.exports = (db) => {
+module.exports = (router, db) => {
   router.get("/login/", (req, res) => {
     //Display customer login form
     res.send("customer Login");

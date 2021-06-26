@@ -10,11 +10,15 @@ const sass       = require("node-sass-middleware");
 const app        = express();
 const morgan     = require('morgan');
 
-// PG database client/connection setup
-const { Pool } = require('pg');
-const dbParams = require('./lib/db.js');
-const db = new Pool(dbParams);
-db.connect();
+const router  = express.Router();
+
+// // PG database client/connection setup
+// const { Pool } = require('pg');
+// const dbParams = require('./lib/db.js');
+// const db = new Pool(dbParams);
+// db.connect();
+//Database changes
+const db = require('./lib/database/db');
 
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
@@ -40,11 +44,11 @@ const restaurantsRoutes = require("./routes/restaurants");
 const menuRoutes = require("./routes/menu");
 // Mount all resource routes
 // Note: Feel free to replace the example routes below with your own
-app.use("/api/users", usersRoutes(db));
+app.use("/api/users", usersRoutes(router, db));
 // app.use("/api/widgets", widgetsRoutes(db));
-app.use("/api/customers", customersRoutes(db));
-app.use("/api/restaurants", restaurantsRoutes(db));
-app.use("/api/menu", menuRoutes(db));
+app.use("/api/customers", customersRoutes(router, db));
+app.use("/api/restaurants", restaurantsRoutes(router, db));
+app.use("/api/menu", menuRoutes(router, db));
 // Note: mount other resources here, using the same pattern above
 
 
