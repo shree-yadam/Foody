@@ -4,11 +4,17 @@
  *   these routes are mounted onto /users
  * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
  */
+//HARD CODED RESTAURANT ID TO BEGIN
+const RESTAURANT_ID = 1;
 
 module.exports = (router, db) => {
   router.get("/", (req, res) => {
-    //get menu display for main page no taking order
-    res.send("Menu");
+    db.getMenuItemsWithRestaurantId(RESTAURANT_ID)
+    .then(menuItems => res.json(menuItems))
+    .catch(e => {
+      console.error(e);
+      res.send(e);
+    });
   });
   return router;
 };

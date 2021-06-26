@@ -12,13 +12,11 @@ const morgan     = require('morgan');
 
 const router  = express.Router();
 
-// // PG database client/connection setup
-// const { Pool } = require('pg');
-// const dbParams = require('./lib/db.js');
-// const db = new Pool(dbParams);
-// db.connect();
 //Database changes
-const db = require('./lib/database/db');
+const menuDb = require('./lib/database/menu_queries');
+const customerDb = require('./lib/database/customer_queries');
+const restaurantDb = require('./lib/database/restaurant_queries');
+
 
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
@@ -36,27 +34,19 @@ app.use("/styles", sass({
 app.use(express.static("public"));
 
 // Separated Routes for each Resource
-// Note: Feel free to replace the example routes below with your own
-const usersRoutes = require("./routes/users");
-// const widgetsRoutes = require("./routes/widgets");
 const customersRoutes = require("./routes/customers");
 const restaurantsRoutes = require("./routes/restaurants");
 const menuRoutes = require("./routes/menu");
+
 // Mount all resource routes
-// Note: Feel free to replace the example routes below with your own
-app.use("/api/users", usersRoutes(router, db));
-// app.use("/api/widgets", widgetsRoutes(db));
-app.use("/api/customers", customersRoutes(router, db));
-app.use("/api/restaurants", restaurantsRoutes(router, db));
-app.use("/api/menu", menuRoutes(router, db));
-// Note: mount other resources here, using the same pattern above
+app.use("/api/customers", customersRoutes(router, customerDb));
+app.use("/api/restaurants", restaurantsRoutes(router, restaurantDb));
+app.use("/api/menu", menuRoutes(router, menuDb));
 
 
 // Home page
-// Warning: avoid creating more routes in this file!
-// Separate them into separate routes files (see above).
 app.get("/", (req, res) => {
-  res.render("index");
+  res.redirect("/api/menu");
 });
 
 app.listen(PORT, () => {
