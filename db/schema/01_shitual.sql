@@ -1,6 +1,9 @@
 DROP TABLE IF EXISTS customers CASCADE;
 DROP TABLE IF EXISTS restaurants CASCADE;
 DROP TABLE IF EXISTS menu_items CASCADE;
+DROP TABLE IF EXISTS orders CASCADE;
+DROP TABLE IF EXISTS order_items CASCADE;
+DROP TYPE IF EXISTS status;
 
 CREATE TYPE status AS ENUM ('requested', 'accepted', 'ready', 'completed');
 
