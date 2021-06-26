@@ -5,10 +5,7 @@
  * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
  */
 
-const express = require('express');
-const router  = express.Router();
-
-module.exports = (db) => {
+module.exports = (router, db) => {
   router.get("/", (req, res) => {
     //get menu display for main page no taking order
     res.send("Menu");
