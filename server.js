@@ -2,16 +2,16 @@
 require('dotenv').config();
 
 // Web server config
-const PORT       = process.env.PORT || 8080;
-const ENV        = process.env.ENV || "development";
-const express    = require("express");
+const PORT = process.env.PORT || 8080;
+const ENV = process.env.ENV || "development";
+const express = require("express");
 const bodyParser = require("body-parser");
-const sass       = require("node-sass-middleware");
-const app        = express();
-const morgan     = require('morgan');
+const sass = require("node-sass-middleware");
+const app = express();
+const morgan = require('morgan');
 const cookieSession = require('cookie-session');
 
-const router  = express.Router();
+const router = express.Router();
 
 //Database changes
 const menuDb = require('./lib/database/menu_queries');
@@ -53,7 +53,7 @@ app.use("/api/menu", menuRoutes(router, menuDb));
 
 // Home page
 app.get("/", (req, res) => {
-  res.redirect("/api/menu");
+  res.render("index");
 });
 
 app.listen(PORT, () => {
