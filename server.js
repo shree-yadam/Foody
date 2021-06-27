@@ -55,17 +55,20 @@ app.use("/api/menu", menuRoutes(router, menuDb));
 app.get("/", (req, res) => {
   const menuItemsPromise = menuDb.getMenuItemsWithRestaurantId(1)
   .then(menuItems => {
+    let customerId = undefined;
+    if(req.session.customerId) {
+      customerId = req.session.customerId;
+    }
     const templateVars = {
-      menuItems
+      menuItems,
+      customerId
     };
-    console.log(templateVars.menuItems);
     res.render("index", templateVars);
   })
   .catch(e => {
     console.log(e);
     res.send(e);
   });
-  // res.render("index");
 });
 
 app.listen(PORT, () => {

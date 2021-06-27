@@ -50,14 +50,9 @@ module.exports = (router, db) => {
   });
 
   router.post("/login/", (req, res) => {
-    // RESTAURANT LOGIN FORM submitted verify against DB and display restaurants main page
-    //Verify customer login information and display order placement form
     const { email, password } = req.body;
-    //TBD: Remove after integrating with ejs and checking functionality
-    console.log(email, password);
     db.getRestaurantWithEmail(email)
       .then(restaurant => {
-        console.log(restaurant);
         if (!restaurant || !bcrypt.compareSync(password, restaurant.password)) {
           res
             .status(403)

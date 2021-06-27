@@ -5,17 +5,20 @@
       Shitual
     </a>
   </div>
-  <!-- replace bottom div with partials with if statement -->
-  <div class="nav-loggedOut">
-    <form action="/api/customers/login_register" method="GET">
-      <button type="submit" class="btn btn-success">Log In / Sign Up</button>
-    </form>
-  </div>
-  <!-- <div class="nav-loggedIn">
+  <!-- TBD: replace bottom div with partials with if statement -->
+  <% if (customerId) { %>
     <div>Welcome CustomerName</div>
     <form action="/api/customers/logout" method="POST">
       <button type="submit" class="btn btn-success">Log Out</button>
     </form>
+  <% } else { %>
+    <div class="nav-loggedOut">
+      <form action="/api/customers/login_register" method="GET">
+        <button type="submit" class="btn btn-success">Log In / Sign Up</button>
+      </form>
+    </div>
+  <% } %>
+  <!-- <div class="nav-loggedIn">
     <i class="fas fa-shopping-cart"></i>
   </div> -->
 </nav>

@@ -25,6 +25,9 @@
   <body>
     <%- include('partials/_navbar') %>
     <%- include('partials/_header') %>
+    <% if (customerId) { %>
+      <form method="POST" action="/api/customers/<%= customerId %>/order">
+        <% } %>
     <div class="list-group">
       <% for(let menuItem of menuItems) { %>
         <div class="menu-item">
@@ -38,8 +41,18 @@
           <div class="item-price">
             <p><%= '$' + menuItem.price/100 %></p>
           </div>
+          <% if (customerId) { %>
+            <div class="item-quantity">
+             <label for="quantity">quantity</label>
+             <input type="number" name="quantity" min=0>
+            </div>
+          <% } %>
         </div>
       <% } %>
     </div>
+    <% if (customerId) { %>
+      <button>Submit Order</button>
+    </form>
+    <% } %>
   </body>
 </html>

@@ -24,5 +24,14 @@
       align-self: flex-end;
     }
 
+    .item-quantity {
+      align-self: flex-end;
+      padding-left: 30px;
+      padding-bottom: 15px;
+      input {
+        width: 50px;
+      }
+    }
+
   };
 }

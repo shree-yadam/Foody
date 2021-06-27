@@ -16,7 +16,11 @@ module.exports = (router, db) => {
     // TBD RENDER LOGIN PAGE
     // res.render("customer_login");
     //Display customer login form
-    res.send("customer Login");
+    let customerId = req.session.customerId;
+    const templateVars = {
+      customerId
+    };
+    res.render("login_register_form", templateVars);
   });
 
   //TBD Remove if not needed
@@ -34,11 +38,8 @@ module.exports = (router, db) => {
   router.post("/login/", (req, res) => {
     //Verify customer login information and display order placement form
     const { email, password } = req.body;
-    //TBD: Remove after integrating with ejs and checking functionality
-    console.log(email, password);
     db.getCustomerWithEmail(email)
       .then(customer => {
-        console.log(customer);
         if (!customer || !bcrypt.compareSync(password, customer.password)) {
           res
             .status(403)
@@ -46,7 +47,7 @@ module.exports = (router, db) => {
           return;
         }
         req.session.customerId = customer.id;
-        res.redirect("/api/menu");
+        res.redirect("/");
       })
       .catch(e => {
         console.error(e);
@@ -63,10 +64,8 @@ module.exports = (router, db) => {
     //TBD Check Functionality
     req.session = null;
     res.redirect("/");
-    console.log("customer logout");
   });
 
-  //STRETCH
   router.post("/:id/order", (req, res) => {
     //Post order for customer #id
     res.send(`customer ${req.params.id} order edit`);

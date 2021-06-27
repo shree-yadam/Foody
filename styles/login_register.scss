@@ -1,0 +1,17 @@
+.login-register-form{
+  position: relative;
+  top: 120px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.form-row{
+  display: flex;
+  flex-direction: row;
+}
+.form-group {
+  padding: 20px;
+}
+button {
+  margin-left: 20px;
+}
