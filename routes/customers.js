@@ -5,6 +5,9 @@
  * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
  */
 const bcrypt = require('bcrypt');
+// const restaurantDb = require('../lib/database/restaurant_queries');
+//TBD :HARD CODED RESTAURANT ID TO BEGIN
+const RESTAURANT_ID = 1;
 
 module.exports = (router, db) => {
 
@@ -32,7 +35,20 @@ module.exports = (router, db) => {
   //TBD:: STRETCH Customer can edit order using link provided as long as status is requested
   router.get("/:id/order/:order_id", (req, res) => {
     //Get order_id belonging to customer #id
-    res.send(`customer ${req.params.id} order ${req.params.order_id}`);
+    let customerId = req.session.customerId;
+    const order_id = req.params.order_id;
+    db.getOrderFromId(order_id)
+      .then(order => {
+        const total_price = order.total_price;
+        const customerId = order.customer_id;
+        const order_id = order.id;
+        const templateVars = {
+          customerId,
+          order_id,
+          total_price
+        };
+        res.render("order_placed", templateVars);
+      })
   });
 
   router.post("/login/", (req, res) => {
@@ -68,7 +84,29 @@ module.exports = (router, db) => {
 
   router.post("/:id/order", (req, res) => {
     //Post order for customer #id
-    res.send(`customer ${req.params.id} order edit`);
+    const itemIds = req.body.itemId;
+    const quantities = req.body.quantity;
+    if (!itemIds) {
+      res.send("InvalidEntry");
+      return;
+    }
+    db.createOrderForCustomerForRestaurant(req.session.customerId, RESTAURANT_ID, itemIds, quantities)
+      .then(orders => {
+        const customerId = req.session.customerId;
+        db.updateTotalPriceForOrder(orders[0].order_id)
+          .then(order => {
+            res.redirect(`/api/customers/${customerId}/order/${order.id}`);
+          })
+          .catch(e => {
+            console.error(e);
+            console.log("ORDER CREATE FAILURE");
+          });
+      })
+      .catch(e => {
+        console.error(e);
+        console.log("ORDER CREATE FAILURE");
+        res.send(e);
+      });
   });
   return router;
 };

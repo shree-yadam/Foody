@@ -40,7 +40,7 @@ CREATE TABLE menu_items (
 
 CREATE TABLE orders (
   id SERIAL PRIMARY KEY NOT NULL,
-  customers_id INTEGER REFERENCES customers(id) ON DELETE CASCADE,
+  customer_id INTEGER REFERENCES customers(id) ON DELETE CASCADE,
   restaurant_id INTEGER REFERENCES restaurants(id) ON DELETE CASCADE,
   order_date TIMESTAMP NOT NULL,
   order_status status NOT NULL DEFAULT 'requested',

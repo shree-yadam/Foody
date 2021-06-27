@@ -19,41 +19,14 @@
     <link rel="stylesheet" href="/styles/menu.css" type="text/css" />
 
     <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
-    <!--<script type="text/javascript" src="/scripts/app.js"></script>-->
   </head>
 
   <body>
     <%- include('partials/_navbar') %>
     <%- include('partials/_header') %>
-    <% if (customerId) { %>
-      <form class="order-menu" method="POST" action="/api/customers/<%= customerId %>/order">
-        <% } %>
-    <div class="list-group">
-      <% for(let menuItem of menuItems) { %>
-        <div class="menu-item">
-          <div class="menu-img">
-            <img src="<%= menuItem.image_url %>">
-          </div>
-          <div class="item-details">
-            <h2><%= menuItem.name %></h2>
-            <p><%= menuItem.description %></p>
-          </div>
-          <div class="item-price">
-            <p><%= '$' + menuItem.price/100 %></p>
-          </div>
-          <% if (customerId) { %>
-            <input name="itemId" value="<%= menuItem.id %>" hidden>
-            <div class="item-quantity">
-             <label for="quantity">quantity</label>
-             <input type="number" name="quantity" min=0>
-            </div>
-          <% } %>
-        </div>
-      <% } %>
-    </div>
-    <% if (customerId) { %>
-      <button class="submit-order-button btn btn-success">Submit Order</button>
-    </form>
-    <% } %>
+    <h4>ORDER SENT</h2>
+    <h2>Order # <%= order_id %></h2>
+    <h4>Total Price: $<%= total_price/100 %></h4>
+    <h4>You will be notified when order is ready for pickup</h4>
   </body>
-</html>
+  </html>
