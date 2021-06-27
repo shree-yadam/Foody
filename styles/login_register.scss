@@ -1,11 +1,29 @@
-.login-register-form{
+.login-register-form {
   position: relative;
   top: 120px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
 }
-.form-row{
+
+.login-register-form form {
+  background-color: lightgray;
+}
+
+.formTitle {
+  text-align: center;
+}
+
+.formLogIn {
+  padding-top: 25px;
+}
+
+.formSignUp {
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.form-row {
   display: flex;
   flex-direction: row;
 }
