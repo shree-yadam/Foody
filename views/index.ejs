@@ -26,7 +26,7 @@
     <%- include('partials/_navbar') %>
     <%- include('partials/_header') %>
     <% if (customerId) { %>
-      <form method="POST" action="/api/customers/<%= customerId %>/order">
+      <form class="order-menu" method="POST" action="/api/customers/<%= customerId %>/order">
         <% } %>
     <div class="list-group">
       <% for(let menuItem of menuItems) { %>
@@ -51,7 +51,7 @@
       <% } %>
     </div>
     <% if (customerId) { %>
-      <button>Submit Order</button>
+      <button class="submit-order-button btn btn-success">Submit Order</button>
     </form>
     <% } %>
   </body>

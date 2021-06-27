@@ -35,3 +35,13 @@
 
   };
 }
+.order-menu {
+  display: flex;
+  flex-direction: column;
+}
+.submit-order-button {
+  margin: 20px;
+  width: 120px;
+  border-radius: 12px;
+  align-self: center;
+}
