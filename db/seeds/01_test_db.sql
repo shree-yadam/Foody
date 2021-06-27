@@ -8,6 +8,6 @@ INSERT INTO customers (name, phone_number, email, password)
          ('Edward Lee', '+14163555999', 'edward.lee@email.com', '$2a$10$FB/BOAVhpuLvpOREQVmvmezD4ED/.JBIDRh70tGevYzYzQgFId2u.');
 
 INSERT INTO menu_items (name, description, image_url, price, is_available, prep_time, restaurant_id)
-  VALUES ('pepperoni', 'pepperoni pizza', '/../menu-pic/hotPizza/pepperoni.jpeg', 1500, TRUE, 20, 1),
-         ('hawaiian', 'hawaiian pizza', '/../menu-pic/hotPizza/hawaiian.jpeg', 1500, TRUE, 20, 1),
-         ('veggie deluxe', 'veggie deluxe pizza', '/../menu_pic/hotPizza/veggie_deluxe', 1500, TRUE, 20, 1);
+  VALUES ('Pepperoni', 'extra pepperoni + extra cheese!', '/menu-pic/hotPizza/pepperoni.jpeg', 1500, TRUE, 20, 1),
+         ('Hawaiian', 'Canadian bacon + pineapple', '/menu-pic/hotPizza/hawaiian.jpeg', 1500, TRUE, 20, 1),
+         ('Veggie deluxe', 'mushrooms, green peppers, onion mix, black olives and Roma tomatoes. (Good healthy option!)', '/menu-pic/hotPizza/veggie_deluxe.jpeg', 1500, TRUE, 20, 1);

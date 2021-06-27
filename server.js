@@ -53,7 +53,19 @@ app.use("/api/menu", menuRoutes(router, menuDb));
 
 // Home page
 app.get("/", (req, res) => {
-  res.render("index");
+  const menuItemsPromise = menuDb.getMenuItemsWithRestaurantId(1)
+  .then(menuItems => {
+    const templateVars = {
+      menuItems
+    };
+    console.log(templateVars.menuItems);
+    res.render("index", templateVars);
+  })
+  .catch(e => {
+    console.log(e);
+    res.send(e);
+  });
+  // res.render("index");
 });
 
 app.listen(PORT, () => {

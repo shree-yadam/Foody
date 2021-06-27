@@ -1,0 +1,28 @@
+.list-group{
+  margin: auto;
+  width: 60%;
+  padding: 10px;
+  display: flex;
+  .menu-item{
+    border: 1px solid black;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    img {
+      width: 150px;
+      height: 150px;
+    }
+    .item-details {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 300px;
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+    .item-price {
+      align-self: flex-end;
+    }
+
+  };
+}

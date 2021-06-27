@@ -1,0 +1,69 @@
+nav {
+  font-family: 'Varela Round', sans-serif;
+  width: 100%;
+  height: 80px;
+  background-color: black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1.5em;
+  position: fixed;
+  top: 0;
+}
+
+.logo a {
+  font-size: 30px;
+}
+
+.brand-logo {
+  height: 80px;
+}
+
+a:link, a:visited, a:active {
+  text-decoration: none;
+  color: white;
+}
+
+.jumbotron h1 {
+  color: white;
+}
+
+.nav-loggedIn {
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  form {
+    margin-right: 1.5em;
+  }
+
+  div {
+    margin-right: 3em;
+  }
+}
+
+.jumbotron {
+  position: relative;
+  overflow: hidden;
+  background-color: black;
+  margin-top: 80px;
+  height: 30vh;
+}
+
+.videobgframe {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity:0.5;
+}
+
+.jumbotron .container {
+  margin-top: 4.5em;
+  color: white;
+  z-index: 2;
+  position: relative;
+}
