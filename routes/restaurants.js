@@ -73,6 +73,13 @@ module.exports = (router, db) => {
       });
   });
 
+  router.post("/logout/", (req, res) => {
+    //TBD Check Functionality
+    req.session = null;
+    res.redirect("/");
+    console.log("restaurant logout");
+  });
+
   //STRETCH
   router.post("/register/", (req, res) => {
     // RESTAURANT REGISTRATION FORM submitted - add to db
