@@ -25,7 +25,26 @@
     <%- include('partials/_navbar') %>
     <%- include('partials/_header') %>
     <h4>ORDER SENT</h2>
+    <h2><%= customerName %></h2>
     <h2>Order # <%= order_id %></h2>
+    <h2>Order Details:</h2>
+    <table>
+      <tr>
+        <th>Item Name</th>
+        <th>Unit Price</th>
+        <th>Quantity</th>
+        <th>Net Price</th>
+      </tr>
+      <% for (let i = 0; i < menuDetails.length; i++) { %>
+        <tr>
+          <td><%= menuDetails[i].name %></td>
+          <td><%= menuDetails[i].unit_price %></td>
+          <td><%= menuDetails[i].quantity %></td>
+          <td><%= menuDetails[i].order_price %></td>
+        </tr>
+      <% } %>
+    </table>
+
     <h4>Total Price: $<%= total_price/100 %></h4>
     <h4>You will be notified when order is ready for pickup</h4>
   </body>

@@ -10,7 +10,6 @@ const sass = require("node-sass-middleware");
 const app = express();
 const morgan = require('morgan');
 const cookieSession = require('cookie-session');
-
 const router = express.Router();
 
 //TBD :HARD CODED RESTAURANT ID TO BEGIN
@@ -47,7 +46,6 @@ app.use(cookieSession({
 const customersRoutes = require("./routes/customers");
 const restaurantsRoutes = require("./routes/restaurants");
 const menuRoutes = require("./routes/menu");
-const customers = require('./routes/customers');
 
 // Mount all resource routes
 app.use("/api/customers", customersRoutes(router, customerDb));

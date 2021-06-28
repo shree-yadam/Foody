@@ -1,10 +1,12 @@
-/*
+  /*
  * All routes for Customers are defined here
  * Since this file is loaded in server.js into api/customers,
  *   these routes are mounted onto /customers
  * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
  */
 const bcrypt = require('bcrypt');
+const sms = require('../lib/sms/sendSMS');
+
 //TBD :HARD CODED RESTAURANT ID TO BEGIN
 const RESTAURANT_ID = 1;
 
@@ -27,16 +29,27 @@ module.exports = (router, db) => {
   router.get("/:id/order/:order_id", (req, res) => {
     //Get order_id belonging to customer #id
     const order_id = req.params.order_id;
-    db.getOrderAndCustomerFromOrderId(order_id)
-      .then(customerOrder => {
-        const total_price = customerOrder.total_price;
-        const customerId = customerOrder.customer_id;
-        const customerName = customerOrder.name;
+    db.getOrderDetailsAndCustomerFromOrderId(order_id)
+      .then(order_details => {
+        const total_price = order_details[0].total_price;
+        const customerId = req.params.id;
+        const order_id = order_details[0].id;
+        const customerName = order_details[0].name;
+        const menuDetails = [];
+        for (let i = 0; i < order_details.length; i++) {
+          const menuItem = {};
+          menuItem.name = order_details[i].item_name;
+          menuItem.unit_price = order_details[i].unit_price;
+          menuItem.quantity = order_details[i].quantity;
+          menuItem.order_price = order_details[i].order_price;
+          menuDetails.push(menuItem);
+        }
         const templateVars = {
           customerId,
           order_id,
           total_price,
-          customerName
+          customerName,
+          menuDetails
         };
         res.render("order_placed", templateVars);
       })
@@ -85,13 +98,24 @@ module.exports = (router, db) => {
       .then(order => {
         return db.addOrderItemsForOrderId(order.id, itemIds, quantities);
       })
-      .then(orders => {
-        return db.updateTotalPriceForOrder(orders[0].order_id);
+      .then(order_items => {
+        return db.updateTotalPriceForOrder(order_items[0].order_id);
       })
       .then(order => {
         const customerId = req.session.customerId;
         res.redirect(`/api/customers/${customerId}/order/${order.id}`);
-
+        return db.getOrderAndCustomerFromOrderId(order.id);
+      })
+      .then(customer_order => {
+        const customerNumber = customer_order.phone_number;
+        const message = `
+        Dear, ${customer_order.name},
+        your order #${customer_order.id} has been sent to the restaurant. Your total amount due at the time of pickup is $${customer_order.total_price/100}. You will be updated about the status soon. Thanks!`
+        return sms.sendSMS(customerNumber, message);
+      })
+      .then(message => {
+        console.log("Message sent to customer!");
+        console.log(message.sid);
       })
       .catch(e => {
         console.error(e);
