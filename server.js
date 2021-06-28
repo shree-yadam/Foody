@@ -46,7 +46,6 @@ app.use(cookieSession({
 const customersRoutes = require("./routes/customers");
 const restaurantsRoutes = require("./routes/restaurants");
 const menuRoutes = require("./routes/menu");
-const customers = require('./routes/customers');
 
 // Mount all resource routes
 app.use("/api/customers", customersRoutes(router, customerDb));
