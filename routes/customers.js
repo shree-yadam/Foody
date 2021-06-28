@@ -5,7 +5,6 @@
  * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
  */
 const bcrypt = require('bcrypt');
-// const restaurantDb = require('../lib/database/restaurant_queries');
 //TBD :HARD CODED RESTAURANT ID TO BEGIN
 const RESTAURANT_ID = 1;
 
@@ -16,8 +15,6 @@ module.exports = (router, db) => {
       res.redirect("/api/menu");
       return;
     }
-    // TBD RENDER LOGIN PAGE
-    // res.render("customer_login");
     //Display customer login form
     let customerId = req.session.customerId;
     const templateVars = {
@@ -25,12 +22,6 @@ module.exports = (router, db) => {
     };
     res.render("login_register_form", templateVars);
   });
-
-  //TBD Remove if not needed
-  // router.get("/register/", (req, res) => {
-  //   //display customer registration form
-  //   res.send("customer registration form");
-  // });
 
   //TBD:: STRETCH Customer can edit order using link provided as long as status is requested
   router.get("/:id/order/:order_id", (req, res) => {
@@ -91,16 +82,16 @@ module.exports = (router, db) => {
       return;
     }
     db.createOrderForCustomerForRestaurant(req.session.customerId, RESTAURANT_ID, itemIds, quantities)
+      .then(order => {
+        return db.addOrderItemsForOrderId(order.id, itemIds, quantities);
+      })
       .then(orders => {
+        return db.updateTotalPriceForOrder(orders[0].order_id);
+      })
+      .then(order => {
         const customerId = req.session.customerId;
-        db.updateTotalPriceForOrder(orders[0].order_id)
-          .then(order => {
-            res.redirect(`/api/customers/${customerId}/order/${order.id}`);
-          })
-          .catch(e => {
-            console.error(e);
-            console.log("ORDER CREATE FAILURE");
-          });
+        res.redirect(`/api/customers/${customerId}/order/${order.id}`);
+
       })
       .catch(e => {
         console.error(e);
