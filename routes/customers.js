@@ -31,7 +31,6 @@ module.exports = (router, db) => {
       .then(customerOrder => {
         const total_price = customerOrder.total_price;
         const customerId = customerOrder.customer_id;
-        const order_id = customerOrder.id;
         const customerName = customerOrder.name;
         const templateVars = {
           customerId,
