@@ -6,6 +6,7 @@
 */
 const bcrypt = require('bcrypt');
 const sms = require('../lib/sms/sendSMS');
+const SALT_ROUNDS = 10;
 
 //TBD :HARD CODED RESTAURANT ID TO BEGIN
 const RESTAURANT_ID = 1;
@@ -28,36 +29,7 @@ module.exports = (router, db) => {
 
   //TBD:: STRETCH Customer can edit order using link provided as long as status is requested
   router.get("/:id/order/:order_id", (req, res) => {
-    //Get order_id belonging to customer #id
-    const order_id = req.params.order_id;
-    db.getOrderDetailsAndCustomerAndRestaurantFromOrderId(order_id)
-      .then(order_details => {
-        const total_price = order_details[0].total_price;
-        const customerId = req.params.id;
-        const order_id = order_details[0].id;
-        const customerName = order_details[0].name;
-        const menuDetails = [];
-        for (let i = 0; i < order_details.length; i++) {
-          const menuItem = {};
-          menuItem.name = order_details[i].item_name;
-          menuItem.unit_price = order_details[i].unit_price;
-          menuItem.quantity = order_details[i].quantity;
-          menuItem.order_price = order_details[i].order_price;
-          menuDetails.push(menuItem);
-        }
-        const templateVars = {
-          customerId,
-          order_id,
-          total_price,
-          customerName,
-          menuDetails
-        };
-        res.render("order_placed", templateVars);
-      })
-      .catch(e => {
-        console.error(e);
-        res.send(e);
-      });
+
   });
 
   //Login request
@@ -84,7 +56,34 @@ module.exports = (router, db) => {
   //Submit new registration
   router.post("/register/", (req, res) => {
     //Add customer details to DB and display order menu
-    res.send("customer registration form submitted");
+    // res.send("customer registration form submitted");
+    console.log(req.body);
+    db.getCustomerWithEmail(req.body.email)
+    .then(customer => {
+      if(!customer) {
+        const {name, phonenumber, email} = req.body;
+        const password = bcrypt.hashSync(req.body.password, SALT_ROUNDS);
+        return db.addCustomer({name, phonenumber, email, password});
+      }
+      else{
+        console.log("customer exists");
+        res
+            .status(403)
+            .send("Email already in use!!");
+          return;
+      }
+    })
+    .then(customer => {
+      if(customer){
+      req.session.customerId = customer.id;
+      }
+      res.redirect(`/`);
+    })
+    .catch(e => {
+      console.error(e);
+      console.log("Customer Register FAILURE");
+      res.send(e);
+    });
   });
 
   //Logout
@@ -94,7 +93,7 @@ module.exports = (router, db) => {
     res.redirect("/");
   });
 
-  //Sumit order
+  //Submit order
   router.post("/:id/order", (req, res) => {
     //Post order for customer #id
     const itemIds = req.body.itemId;
@@ -111,12 +110,32 @@ module.exports = (router, db) => {
         return db.updateTotalPriceForOrder(order_items[0].order_id);
       })
       .then(order => {
-        const customerId = req.session.customerId;
-        res.redirect(`/api/customers/${customerId}/order/${order.id}`);
-        // return db.getOrderAndCustomerFromOrderId(order.id);
         return db.getOrderDetailsAndCustomerAndRestaurantFromOrderId(order.id);
       })
       .then(customer_order_restaurant => {
+        // Render page for user
+        const total_price = customer_order_restaurant[0].total_price;
+        const customerId = req.session.customerId;
+        const order_id = customer_order_restaurant[0].id;
+        const customerName = customer_order_restaurant[0].name;
+        const menuDetails = [];
+        for (let i = 0; i < customer_order_restaurant.length; i++) {
+          const menuItem = {};
+          menuItem.name = customer_order_restaurant[i].item_name;
+          menuItem.unit_price = customer_order_restaurant[i].unit_price;
+          menuItem.quantity = customer_order_restaurant[i].quantity;
+          menuItem.order_price = customer_order_restaurant[i].order_price;
+          menuDetails.push(menuItem);
+        }
+        const templateVars = {
+          customerId,
+          order_id,
+          total_price,
+          customerName,
+          menuDetails
+        };
+        res.render("order_placed", templateVars);
+        //Send Customer SMS
         const customerNumber = customer_order_restaurant[0].phone_number;
         const customerMessage = `
         Dear, ${customer_order_restaurant[0].name},
@@ -124,6 +143,7 @@ module.exports = (router, db) => {
         const smsCustomerPromise = sms.sendSMS(customerNumber, customerMessage);
         const restaurantNumber = customer_order_restaurant[0].restaurant_phone_number;
         console.log(restaurantNumber);
+        //prepare restaurant message
         let restaurantMessage = `
         Order requested:
         Order #${customer_order_restaurant[0].id}
@@ -134,15 +154,16 @@ module.exports = (router, db) => {
           `;
         }
         restaurantMessage += `Respond as any of following messages:
-        ACCEPTED <time_expected>
+        ACCEPTED:<time_expected>
         or
         READY
         or
         DELIVERED
         or
-        REJECTED
+        REJECTED:<reason>
         to update status`
         const smsRestaurantPromise = sms.sendSMS(restaurantNumber, restaurantMessage);
+        //send SMS to restaurant and customer
         return Promise.all([smsCustomerPromise, smsRestaurantPromise]);
       })
       .then(message => {

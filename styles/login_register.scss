@@ -33,3 +33,24 @@
 button {
   margin-left: 20px;
 }
+.customer-login-error{
+  color: red;
+  padding-left: 50px;
+  display: none;
+}
+.customer-register-error{
+  color: red;
+  padding-left: 50px;
+  display: none;
+}
+.btn-primary{
+  background-color: #171818;
+  border: none;
+  margin-left: 110px;
+}
+.formTitle{
+  background-color: #171818;
+  color: white;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
