@@ -5,7 +5,7 @@
  * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
  */
 const bcrypt = require('bcrypt');
-// const sms = require('../lib/sms/sendSMS');
+const sms = require('../lib/sms/sendSMS');
 
 //TBD :HARD CODED RESTAURANT ID TO BEGIN
 const RESTAURANT_ID = 1;
@@ -94,9 +94,9 @@ module.exports = (router, db) => {
       .then(order => {
         const customerId = req.session.customerId;
         res.redirect(`/api/customers/${customerId}/order/${order.id}`);
-        // return sms.sendSMS();
+        return sms.sendSMS();
       })
-      // .then(message => console.log(message.sid))
+      .then(message => console.log(message.sid))
       .catch(e => {
         console.error(e);
         console.log("ORDER CREATE FAILURE");

@@ -10,7 +10,6 @@ const sass = require("node-sass-middleware");
 const app = express();
 const morgan = require('morgan');
 const cookieSession = require('cookie-session');
-const sms = require('./lib/sms/sendSMS');
 const router = express.Router();
 
 //TBD :HARD CODED RESTAURANT ID TO BEGIN
@@ -90,9 +89,6 @@ app.get("/", (req, res) => {
     res.send(e);
   });
 });
-
-sms.sendSMS()
-.then(message => console.log(message.sid));
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
