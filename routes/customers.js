@@ -26,17 +26,18 @@ module.exports = (router, db) => {
   //TBD:: STRETCH Customer can edit order using link provided as long as status is requested
   router.get("/:id/order/:order_id", (req, res) => {
     //Get order_id belonging to customer #id
-    let customerId = req.session.customerId;
     const order_id = req.params.order_id;
-    db.getOrderFromId(order_id)
-      .then(order => {
-        const total_price = order.total_price;
-        const customerId = order.customer_id;
-        const order_id = order.id;
+    db.getOrderAndCustomerFromOrderId(order_id)
+      .then(customerOrder => {
+        const total_price = customerOrder.total_price;
+        const customerId = customerOrder.customer_id;
+        const order_id = customerOrder.id;
+        const customerName = customerOrder.name;
         const templateVars = {
           customerId,
           order_id,
-          total_price
+          total_price,
+          customerName
         };
         res.render("order_placed", templateVars);
       })
