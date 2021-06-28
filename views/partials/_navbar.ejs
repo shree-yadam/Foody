@@ -7,7 +7,7 @@
   </div>
   <!-- TBD: replace bottom div with partials with if statement -->
   <% if (customerId) { %>
-    <div>Welcome CustomerName</div>
+    <div>Welcome <%= customerName %></div>
     <form action="/api/customers/logout" method="POST">
       <button type="submit" class="btn btn-success">Log Out</button>
     </form>
