@@ -12,6 +12,7 @@ const RESTAURANT_ID = 1;
 
 module.exports = (router, db) => {
 
+  //Display login/register form
   router.get("/login_register/", (req, res) => {
     if (req.session.customerId) {
       res.redirect("/api/menu");
@@ -53,8 +54,13 @@ module.exports = (router, db) => {
         };
         res.render("order_placed", templateVars);
       })
+      .catch(e => {
+        console.error(e);
+        res.send(e);
+      });
   });
 
+  //Login request
   router.post("/login/", (req, res) => {
     //Verify customer login information and display order placement form
     const { email, password } = req.body;
@@ -75,17 +81,20 @@ module.exports = (router, db) => {
       });
   });
 
+  //Submit new registration
   router.post("/register/", (req, res) => {
     //Add customer details to DB and display order menu
     res.send("customer registration form submitted");
   });
 
+  //Logout
   router.post("/logout/", (req, res) => {
     //TBD Check Functionality
     req.session = null;
     res.redirect("/");
   });
 
+  //Sumit order
   router.post("/:id/order", (req, res) => {
     //Post order for customer #id
     const itemIds = req.body.itemId;
