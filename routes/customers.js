@@ -1,9 +1,9 @@
-  /*
- * All routes for Customers are defined here
- * Since this file is loaded in server.js into api/customers,
- *   these routes are mounted onto /customers
- * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
- */
+/*
+* All routes for Customers are defined here
+* Since this file is loaded in server.js into api/customers,
+*   these routes are mounted onto /customers
+* See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
+*/
 const bcrypt = require('bcrypt');
 const sms = require('../lib/sms/sendSMS');
 
@@ -30,7 +30,7 @@ module.exports = (router, db) => {
   router.get("/:id/order/:order_id", (req, res) => {
     //Get order_id belonging to customer #id
     const order_id = req.params.order_id;
-    db.getOrderDetailsAndCustomerFromOrderId(order_id)
+    db.getOrderDetailsAndCustomerAndRestaurantFromOrderId(order_id)
       .then(order_details => {
         const total_price = order_details[0].total_price;
         const customerId = req.params.id;
@@ -113,18 +113,43 @@ module.exports = (router, db) => {
       .then(order => {
         const customerId = req.session.customerId;
         res.redirect(`/api/customers/${customerId}/order/${order.id}`);
-        return db.getOrderAndCustomerFromOrderId(order.id);
+        // return db.getOrderAndCustomerFromOrderId(order.id);
+        return db.getOrderDetailsAndCustomerAndRestaurantFromOrderId(order.id);
       })
-      .then(customer_order => {
-        const customerNumber = customer_order.phone_number;
-        const message = `
-        Dear, ${customer_order.name},
-        your order #${customer_order.id} has been sent to the restaurant. Your total amount due at the time of pickup is $${customer_order.total_price/100}. You will be updated about the status soon. Thanks!`
-        return sms.sendSMS(customerNumber, message);
+      .then(customer_order_restaurant => {
+        const customerNumber = customer_order_restaurant[0].phone_number;
+        const customerMessage = `
+        Dear, ${customer_order_restaurant[0].name},
+        your order #${customer_order_restaurant[0].id} has been sent to the restaurant. Your total amount due at the time of pickup is $${customer_order_restaurant[0].total_price / 100}. You will be updated about the status soon. Thanks!`
+        const smsCustomerPromise = sms.sendSMS(customerNumber, customerMessage);
+        const restaurantNumber = customer_order_restaurant[0].restaurant_phone_number;
+        console.log(restaurantNumber);
+        let restaurantMessage = `
+        Order requested:
+        Order #${customer_order_restaurant[0].id}
+        Details:
+        `;
+        for (let i = 0; i < customer_order_restaurant.length; i++) {
+          restaurantMessage += `${i + 1}. ${customer_order_restaurant[i].item_name} - ${customer_order_restaurant[i].quantity}
+          `;
+        }
+        restaurantMessage += `Respond as any of following messages:
+        ACCEPTED <time_expected>
+        or
+        READY
+        or
+        DELIVERED
+        or
+        REJECTED
+        to update status`
+        const smsRestaurantPromise = sms.sendSMS(restaurantNumber, restaurantMessage);
+        return Promise.all([smsCustomerPromise, smsRestaurantPromise]);
       })
       .then(message => {
         console.log("Message sent to customer!");
-        console.log(message.sid);
+        console.log(message[0].sid);
+        console.log("Message sent to Restaurant!");
+        console.log(message[1].sid);
       })
       .catch(e => {
         console.error(e);
