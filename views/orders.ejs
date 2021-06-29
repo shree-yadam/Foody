@@ -19,86 +19,91 @@
     <link rel="stylesheet" href="/styles/orders.css" type="text/css" />
 
     <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
-    <!--<script type="text/javascript" src="/scripts/app.js"></script>-->
+    <script type="text/javascript" src="/scripts/orders.js"></script>
   </head>
 
   <body>
     <%- include('partials/_navbar') %>
     <%- include('partials/_header') %>
-    <section class="currentOrder">
-      <div class="sectionTitle">
+    <!-- current order list -->
+    <section>
+      <div class="sectionTitle" id="currentOrder">
         <h2>
           Current Order
         </h2>
         <i class="fas fa-angle-double-down"></i>
       </div>
-      <% for (let order of currOrdersArr) { %>
-        <% if (order.length > 0) { %>
-          <% const d = new Date(order[0].date); %>
-          <% const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' } %>
-          <div class="ordersContainer">
-            <div class="orderDate">
-              Date: <%= d.toLocaleDateString(undefined, options) %>
+      <div class="currentOrdersContainer">
+        <% for (let order of currOrdersArr) { %>
+          <% if (order.length > 0) { %>
+            <% const d = new Date(order[0].date); %>
+            <% const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' } %>
+            <div class="ordersContainer">
+              <div class="orderDate">
+                Date: <%= d.toLocaleDateString(undefined, options) %>
+              </div>
+              <div class="orderCards">
+                <div class="orderNo">
+                  Order #<%= order[0].id %>
+                </div>
+                <div class="orderStatus">
+                  Order Status: <%= order[0].status %>
+                </div>
+                <div class="orderItemsContainer">
+                  <% for (let menu of order) { %>
+                    <div class="orderItem">
+                      <%= menu.name %> x <%= menu.quantity %>
+                    </div>
+                  <% } %>
+                </div>
+                <div class="totalPrice">
+                  Total: $<%= (order[0].total) / 100 %>
+                </div>
+              </div>
             </div>
-            <div class="OrderCards">
-              <div class="orderNo">
-                Order #<%= order[0].id %>
-              </div>
-              <div class="orderStatus">
-                Order Status: <%= order[0].status %>
-              </div>
-              <div class="orderItemsContainer">
-                <% for (let menu of order) { %>
-                  <div class="orderItem">
-                    <%= menu.name %> x <%= menu.quantity %>
-                  </div>
-                <% } %>
-              </div>
-              <div class="totalPrice">
-                Total: $<%= (order[0].total) / 100 %>
-              </div>
-            </div>
-          </div>
+          <% } %>
         <% } %>
-      <% } %>
+      </div>
     </section>
     <!-- past orders list -->
-    <section class="pastOrder">
-      <div class="sectionTitle">
+    <section>
+      <div class="sectionTitle" id="pastOrder">
         <h2>
           Past Order
         </h2>
         <i class="fas fa-angle-double-down"></i>
       </div>
-      <% for (let order of pastOrdersArr) { %>
-        <% if (order.length > 0) { %>
-          <% const d = new Date(order[0].date); %>
-          <% const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' } %>
-          <div class="ordersContainer">
-            <div class="orderDate">
-              Date: <%= d.toLocaleDateString(undefined, options) %>
+      <div class="pastOrdersContainer">
+        <% for (let order of pastOrdersArr) { %>
+          <% if (order.length > 0) { %>
+            <% const d = new Date(order[0].date); %>
+            <% const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' } %>
+            <div class="ordersContainer">
+              <div class="orderDate">
+                Date: <%= d.toLocaleDateString(undefined, options) %>
+              </div>
+              <div class="orderCards">
+                <div class="orderNo">
+                  Order #<%= order[0].id %>
+                </div>
+                <div class="orderStatus">
+                  Order Status: <%= order[0].status %>
+                </div>
+                <div class="orderItemsContainer">
+                  <% for (let menu of order) { %>
+                    <div class="orderItem">
+                      <%= menu.name %> x <%= menu.quantity %>
+                    </div>
+                  <% } %>
+                </div>
+                <div class="totalPrice">
+                  Total: $<%= (order[0].total) / 100 %>
+                </div>
+              </div>
             </div>
-            <div class="OrderCards">
-              <div class="orderNo">
-                Order #<%= order[0].id %>
-              </div>
-              <div class="orderStatus">
-                Order Status: <%= order[0].status %>
-              </div>
-              <div class="orderItemsContainer">
-                <% for (let menu of order) { %>
-                  <div class="orderItem">
-                    <%= menu.name %> x <%= menu.quantity %>
-                  </div>
-                <% } %>
-              </div>
-              <div class="totalPrice">
-                Total: $<%= (order[0].total) / 100 %>
-              </div>
-            </div>
-          </div>
+          <% } %>
         <% } %>
-      <% } %>
+      </div>
     </section>
   </body>
 </html>
