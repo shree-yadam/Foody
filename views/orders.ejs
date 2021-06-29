@@ -26,7 +26,7 @@
     <%- include('partials/_navbar') %>
     <%- include('partials/_header') %>
     <!-- current order list -->
-    <section>
+    <section class="currentOrderSection">
       <div class="sectionTitle" id="currentOrder">
         <h2>
           Current Order
@@ -34,33 +34,39 @@
         <i class="fas fa-angle-double-down"></i>
       </div>
       <div class="currentOrdersContainer">
-        <% for (let order of currOrdersArr) { %>
-          <% if (order.length > 0) { %>
-            <% const d = new Date(order[0].date); %>
-            <% const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' } %>
-            <div class="ordersContainer">
-              <div class="orderDate">
-                Date: <%= d.toLocaleDateString(undefined, options) %>
+        <% if (currOrdersArr.length === 0) { %>
+          <div class="noOnGoingOrder">
+            <a href="/"><h3>No Current Order. Click to Order Up!</h3></a>
+          </div>
+        <% } else { %>
+          <% for (let order of currOrdersArr) { %>
+            <% if (order.length > 0) { %>
+              <% const d = new Date(order[0].date); %>
+              <% const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' } %>
+              <div class="ordersContainer">
+                <div class="orderDate">
+                  Date: <%= d.toLocaleDateString(undefined, options) %>
+                </div>
+                <div class="orderCards">
+                  <div class="orderNo">
+                    Order #<%= order[0].id %>
+                  </div>
+                  <div class="orderStatus">
+                    Order Status: <%= order[0].status %>
+                  </div>
+                  <div class="orderItemsContainer">
+                    <% for (let menu of order) { %>
+                      <div class="orderItem">
+                        <%= menu.name %> x <%= menu.quantity %>
+                      </div>
+                    <% } %>
+                  </div>
+                  <div class="totalPrice">
+                    Total: $<%= (order[0].total) / 100 %>
+                  </div>
+                </div>
               </div>
-              <div class="orderCards">
-                <div class="orderNo">
-                  Order #<%= order[0].id %>
-                </div>
-                <div class="orderStatus">
-                  Order Status: <%= order[0].status %>
-                </div>
-                <div class="orderItemsContainer">
-                  <% for (let menu of order) { %>
-                    <div class="orderItem">
-                      <%= menu.name %> x <%= menu.quantity %>
-                    </div>
-                  <% } %>
-                </div>
-                <div class="totalPrice">
-                  Total: $<%= (order[0].total) / 100 %>
-                </div>
-              </div>
-            </div>
+            <% } %>
           <% } %>
         <% } %>
       </div>
