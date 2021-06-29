@@ -7,6 +7,7 @@
 const bcrypt = require('bcrypt');
 const sms = require('../lib/sms/sendSMS');
 const SALT_ROUNDS = 10;
+const _ = require('lodash');
 
 //TBD :HARD CODED RESTAURANT ID TO BEGIN
 const RESTAURANT_ID = 1;
