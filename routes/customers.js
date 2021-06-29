@@ -27,6 +27,34 @@ module.exports = (router, db) => {
     res.render("login_register_form", templateVars);
   });
 
+  //get past/curr order for customer
+  router.get("/:id/orders", (req, res) => {
+    const customerId = req.params.id;
+    db.getCurrentOrderAndItems(customerId)
+    .then(currOrders => {
+      const currOrdersArr = _.toPairs(_.groupBy(currOrders, (order) => order.id))
+        .sort((a, b) => b[0] - a[0])
+        .map(order => order[1]);
+      db.getPastOrderAndItems(customerId)
+      .then(pastOrders => {
+        const pastOrdersArr = _.toPairs(_.groupBy(pastOrders, (order) => order.id))
+        .sort((a, b) => b[0] - a[0])
+        .map(order => order[1]);
+        db.getCustomerWithId(customerId)
+        .then(customer => {
+          const customerName = customer.name;
+          const templateVars = {
+            currOrdersArr,
+            pastOrdersArr,
+            customerId,
+            customerName
+          };
+          res.render("orders", templateVars);
+        });
+      });
+    });
+  });
+
   //TBD:: STRETCH Customer can edit order using link provided as long as status is requested
   router.get("/:id/order/:order_id", (req, res) => {
 

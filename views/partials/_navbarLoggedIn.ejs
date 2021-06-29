@@ -1,5 +1,8 @@
 <div class="nav-loggedIn">
   <div>Welcome <%= customerName %> </div>
+  <form action="/api/customers/<%= customerId %>/orders" method="GET">
+    <button type="submit" class="btn btn-info">Orders</button>
+  </form>
   <form action="/api/customers/logout" method="POST">
     <button type="submit" class="btn btn-success">Log Out</button>
   </form>

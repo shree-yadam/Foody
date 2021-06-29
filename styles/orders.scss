@@ -1,0 +1,21 @@
+section {
+  width: 60%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+
+  .sectionTitle {
+    display: flex;
+    align-items: center;
+
+    i {
+      margin-left: 0.5em;
+    }
+  }
+
+  .ordersContainer {
+    border: 3px solid black;
+    display: flex;
+    flex-direction: column;
+  }
+}

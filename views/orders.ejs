@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Shitual</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
+    <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
+    <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
+    <link rel="stylesheet" href="/styles/navbar.css" type="text/css" />
+    <link rel="stylesheet" href="/styles/orders.css" type="text/css" />
+
+    <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
+    <!--<script type="text/javascript" src="/scripts/app.js"></script>-->
+  </head>
+
+  <body>
+    <%- include('partials/_navbar') %>
+    <%- include('partials/_header') %>
+    <section class="currentOrder">
+      <div class="sectionTitle">
+        <h2>
+          Current Order
+        </h2>
+        <i class="fas fa-angle-double-down"></i>
+      </div>
+      <% for (let order of currOrdersArr) { %>
+        <% if (order.length > 0) { %>
+          <% const d = new Date(order[0].date); %>
+          <% const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' } %>
+          <div class="ordersContainer">
+            <div class="orderDate">
+              Date: <%= d.toLocaleDateString(undefined, options) %>
+            </div>
+            <div class="currentOrderCards">
+              <div class="orderNo">
+                Order #<%= order[0].id %>
+              </div>
+              <div class="orderStatus">
+                Order Status: <%= order[0].status %>
+              </div>
+              <div class="orderItemsContainer">
+                <% for (let menu of order) { %>
+                  <div class="orderItem">
+                    <%= menu.name %> x <%= menu.quantity %>
+                  </div>
+                <% } %>
+              </div>
+              <div class="totalPrice">
+                Total: $<%= (order[0].total) / 100 %>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      <% } %>
+    </section>
+    <!-- past orders list -->
+    <section class="pastOrder">
+      <div class="sectionTitle">
+        <h2>
+          Current Order
+        </h2>
+        <i class="fas fa-angle-double-down"></i>
+      </div>
+      <% for (let order of pastOrdersArr) { %>
+        <% if (order.length > 0) { %>
+          <% const d = new Date(order[0].date); %>
+          <% const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' } %>
+          <div class="ordersContainer">
+            <div class="orderDate">
+              Date: <%= d.toLocaleDateString(undefined, options) %>
+            </div>
+            <div class="currentOrderCards">
+              <div class="orderNo">
+                Order #<%= order[0].id %>
+              </div>
+              <div class="orderStatus">
+                Order Status: <%= order[0].status %>
+              </div>
+              <div class="orderItemsContainer">
+                <% for (let menu of order) { %>
+                  <div class="orderItem">
+                    <%= menu.name %> x <%= menu.quantity %>
+                  </div>
+                <% } %>
+              </div>
+              <div class="totalPrice">
+                Total: $<%= (order[0].total) / 100 %>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      <% } %>
+    </section>
+  </body>
+</html>
