@@ -1,0 +1,14 @@
+.order-sent-title {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  table{
+    width: 90%;
+  }
+  h4{
+    color: white;
+    background-color: #171818;
+    margin-top: 20px;
+  }
+}
