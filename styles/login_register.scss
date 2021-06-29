@@ -54,3 +54,12 @@ button {
   padding-top: 10px;
   padding-bottom: 10px;
 }
+.error {
+  display: none;
+}
+.error-text{
+  display: flex;
+  color: red;
+  margin: 20px;
+  margin-left: 70px;
+}

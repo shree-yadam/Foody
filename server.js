@@ -50,43 +50,12 @@ const menuRoutes = require("./routes/menu");
 // Mount all resource routes
 app.use("/api/customers", customersRoutes(router, customerDb));
 app.use("/api/restaurants", restaurantsRoutes(router, restaurantDb));
-app.use("/api/menu", menuRoutes(router, menuDb));
+app.use("/api/menu", menuRoutes(router, menuDb, customerDb));
 
 
 // Home page
 app.get("/", (req, res) => {
-  menuDb.getMenuItemsWithRestaurantId(RESTAURANT_ID)
-  .then(menuItems => {
-    let customerId = undefined;
-    if(req.session.customerId) {
-      customerId = req.session.customerId;
-      customerDb.getCustomerWithId(customerId)
-      .then(customer => {
-        const customerName = customer.name;
-        const templateVars = {
-          menuItems,
-          customerId,
-          customerName
-        };
-        res.render("index", templateVars);
-        return;
-      })
-      .catch(e => {
-        console.log(e);
-        res.send(e);
-      });
-    } else {
-      const templateVars = {
-        menuItems,
-        customerId,
-      };
-      res.render("index", templateVars);
-    }
-  })
-  .catch(e => {
-    console.log(e);
-    res.send(e);
-  });
+  res.redirect("/api/menu");
 });
 
 app.listen(PORT, () => {

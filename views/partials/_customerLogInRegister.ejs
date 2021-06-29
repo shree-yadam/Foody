@@ -1,8 +1,10 @@
-<form class="formLogIn" method="POST" action="/api/customers/login">
+<!-- <form class="formLogIn" method="POST" action="/api/customers/login"> -->
+<form class="formLogIn" id="formLogIn">
   <div class="formTitle">Log In</div>
   <div class="form-group">
     <label for="email">Email address</label>
-    <input type="email" class="form-control" name="email" aria-describedby="emailHelp" placeholder="Enter email" required>
+    <input type="email" class="form-control" name="email" aria-describedby="emailHelp" placeholder="Enter email"
+      required>
     <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
   </div>
   <div class="form-group">
@@ -10,27 +12,43 @@
     <input type="password" class="form-control" name="password" placeholder="Password" required>
   </div>
   <button type="submit" class="btn btn-primary">Login</button>
+  <div class="error" id="login-error">
+    <div class="error-text">
+      <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+      <h6 id="error-msg">Invalid Login! Try again</h6>
+      <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+    </div>
+  </div>
 </form>
 
-<form class="formSignUp" method="POST" action="/api/customers/register">
-  <div class="formTitle">Sign Up</div>
-  <div class="form-group">
-    <label for="name">Full Name</label>
-    <input type="text" class="form-control" name="name" placeholder="Full name" required>
+<!-- <form class="formSignUp" method="POST" action="/api/customers/register"> -->
+<form class="formSignUp" id="fromSignUp">
+<div class="formTitle">Sign Up</div>
+<div class="form-group">
+  <label for="name">Full Name</label>
+  <input type="text" class="form-control" name="name" placeholder="Full name" required>
+</div>
+<div class="form-row">
+  <div class="form-group col-md-6">
+    <label for="email">Email</label>
+    <input type="email" class="form-control" name="email" placeholder="Email" required>
   </div>
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="email">Email</label>
-      <input type="email" class="form-control" name="email" placeholder="Email" required>
-    </div>
-    <div class="form-group col-md-6">
-      <label for="password">Password</label>
-      <input type="password" class="form-control" name="password" placeholder="Password" required>
-    </div>
+  <div class="form-group col-md-6">
+    <label for="password">Password</label>
+    <input type="password" class="form-control" name="password" placeholder="Password" required>
   </div>
-  <div class="form-group">
-    <label for="phonenumber">Phone Number</label>
-    <input type="text" class="form-control" name="phonenumber" placeholder="Phone Number 10 digit no hyphens" required>
+</div>
+<div class="form-group">
+  <label for="phonenumber">Phone Number</label>
+  <input type="tel" pattern="\+1[0-9]{3}[0-9]{3}[0-9]{4}" class="form-control" name="phonenumber"
+    placeholder="Format: +1234567890" required>
+</div>
+<button type="submit" class="btn btn-primary">Sign up</button>
+<div class="error" id="register-error">
+  <div class="error-text">
+    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+    <h6 id="error-msg">Email already in use!</h6>
+    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
   </div>
-  <button type="submit" class="btn btn-primary">Sign up</button>
+</div>
 </form>
