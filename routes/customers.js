@@ -32,28 +32,28 @@ module.exports = (router, db) => {
   router.get("/:id/orders", (req, res) => {
     const customerId = req.params.id;
     db.getCurrentOrderAndItems(customerId)
-    .then(currOrders => {
-      const currOrdersArr = _.toPairs(_.groupBy(currOrders, (order) => order.id))
-        .sort((a, b) => b[0] - a[0])
-        .map(order => order[1]);
-      db.getPastOrderAndItems(customerId)
-      .then(pastOrders => {
-        const pastOrdersArr = _.toPairs(_.groupBy(pastOrders, (order) => order.id))
-        .sort((a, b) => b[0] - a[0])
-        .map(order => order[1]);
-        db.getCustomerWithId(customerId)
-        .then(customer => {
-          const customerName = customer.name;
-          const templateVars = {
-            currOrdersArr,
-            pastOrdersArr,
-            customerId,
-            customerName
-          };
-          res.render("orders", templateVars);
-        });
+      .then(currOrders => {
+        const currOrdersArr = _.toPairs(_.groupBy(currOrders, (order) => order.id))
+          .sort((a, b) => b[0] - a[0])
+          .map(order => order[1]);
+        db.getPastOrderAndItems(customerId)
+          .then(pastOrders => {
+            const pastOrdersArr = _.toPairs(_.groupBy(pastOrders, (order) => order.id))
+              .sort((a, b) => b[0] - a[0])
+              .map(order => order[1]);
+            db.getCustomerWithId(customerId)
+              .then(customer => {
+                const customerName = customer.name;
+                const templateVars = {
+                  currOrdersArr,
+                  pastOrdersArr,
+                  customerId,
+                  customerName
+                };
+                res.render("orders", templateVars);
+              });
+          });
       });
-    });
   });
 
   //TBD:: STRETCH Customer can edit order using link provided as long as status is requested
@@ -61,37 +61,37 @@ module.exports = (router, db) => {
 
   });
 
-  router.get("/:id/order", (req,res) => {
+  router.get("/:id/order", (req, res) => {
     const customerId = req.params.id;
     db.getOrderDetailsAndCustomerAndRestaurantFromOrderId(customerId)
-    .then(orderItems => {
+      .then(orderItems => {
 
-      // Render page for user
-      const total_price = orderItems[0].total_price;
-      const order_id = orderItems[0].id;
-      const customerName = orderItems[0].name;
-      const menuDetails = [];
-      for (let i = 0; i < orderItems.length; i++) {
-        const menuItem = {};
-        menuItem.name = orderItems[i].item_name;
-        menuItem.unit_price = orderItems[i].unit_price;
-        menuItem.quantity = orderItems[i].quantity;
-        menuItem.order_price = orderItems[i].order_price;
-        menuDetails.push(menuItem);
-      }
-      const templateVars = {
-        customerId,
-        order_id,
-        total_price,
-        customerName,
-        menuDetails
-      };
-      res.render("order_placed", templateVars);
-    })
-    .catch(e => {
-      console.error(e);
-      res.send(e);
-    });
+        // Render page for user
+        const total_price = orderItems[0].total_price;
+        const order_id = orderItems[0].id;
+        const customerName = orderItems[0].name;
+        const menuDetails = [];
+        for (let i = 0; i < orderItems.length; i++) {
+          const menuItem = {};
+          menuItem.name = orderItems[i].item_name;
+          menuItem.unit_price = orderItems[i].unit_price;
+          menuItem.quantity = orderItems[i].quantity;
+          menuItem.order_price = orderItems[i].order_price;
+          menuDetails.push(menuItem);
+        }
+        const templateVars = {
+          customerId,
+          order_id,
+          total_price,
+          customerName,
+          menuDetails
+        };
+        res.render("order_placed", templateVars);
+      })
+      .catch(e => {
+        console.error(e);
+        res.send(e);
+      });
   });
 
   //Login request
@@ -119,29 +119,29 @@ module.exports = (router, db) => {
   router.post("/register", (req, res) => {
     //Add customer details to DB and display order menu
     db.getCustomerWithEmail(req.body.email)
-    .then(customer => {
-      if(!customer) {
-        const {name, phonenumber, email} = req.body;
-        const password = bcrypt.hashSync(req.body.password, SALT_ROUNDS);
-        return db.addCustomer({name, phonenumber, email, password});
-      }
-      else{
-        res
+      .then(customer => {
+        if (!customer) {
+          const { name, phonenumber, email } = req.body;
+          const password = bcrypt.hashSync(req.body.password, SALT_ROUNDS);
+          return db.addCustomer({ name, phonenumber, email, password });
+        }
+        else {
+          res
             .status(403)
             .send("Email already in use!!");
           return;
-      }
-    })
-    .then(customer => {
-      if(customer){
-      req.session.customerId = customer.id;
-      res.redirect("/");
-      }
-    })
-    .catch(e => {
-      console.error(e);
-      console.log("Customer Register FAILURE");
-    });
+        }
+      })
+      .then(customer => {
+        if (customer) {
+          req.session.customerId = customer.id;
+          res.redirect("/");
+        }
+      })
+      .catch(e => {
+        console.error(e);
+        console.log("Customer Register FAILURE");
+      });
   });
 
   //Logout

@@ -13,7 +13,7 @@ const handleLoginError = function(event) {
       $("html").html(response);
     })
     .catch((error) => {
-      console.log(error);
+      console.log("Login error");
       $('#login-error').show();
     });
 }
@@ -32,7 +32,7 @@ const handleRegisterError = function(event) {
       $("html").html(response);
     })
     .catch((error) => {
-      console.log(error);
+      console.log("register error");
       $('#register-error').show();
     });
 }
@@ -43,4 +43,8 @@ $(document).ready(function() {
   //register even handlers
   $('#formLogIn').submit(handleLoginError);
   $('#fromSignUp').submit(handleRegisterError);
+  $('input').keydown(() => {
+    $('#login-error').hide();
+    $('#register-error').hide();
+  });
 });
