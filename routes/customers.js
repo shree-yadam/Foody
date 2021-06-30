@@ -85,8 +85,6 @@ module.exports = (router, db) => {
   //Submit new registration
   router.post("/register/", (req, res) => {
     //Add customer details to DB and display order menu
-    // res.send("customer registration form submitted");
-    console.log(req.body);
     db.getCustomerWithEmail(req.body.email)
     .then(customer => {
       if(!customer) {
@@ -105,13 +103,12 @@ module.exports = (router, db) => {
     .then(customer => {
       if(customer){
       req.session.customerId = customer.id;
+      res.redirect("/");
       }
-      res.redirect(`/`);
     })
     .catch(e => {
       console.error(e);
       console.log("Customer Register FAILURE");
-      res.send(e);
     });
   });
 
@@ -171,7 +168,6 @@ module.exports = (router, db) => {
         your order #${customer_order_restaurant[0].id} has been sent to the restaurant. Your total amount due at the time of pickup is $${customer_order_restaurant[0].total_price / 100}. You will be updated about the status soon. Thanks!`
         const smsCustomerPromise = sms.sendSMS(customerNumber, customerMessage);
         const restaurantNumber = customer_order_restaurant[0].restaurant_phone_number;
-        console.log(restaurantNumber);
         //prepare restaurant message
         let restaurantMessage = `
         Order requested:
@@ -183,13 +179,13 @@ module.exports = (router, db) => {
           `;
         }
         restaurantMessage += `Respond as any of following messages:
-        ACCEPTED:<time_expected>
+        <Order#>: accepted: <time_expected_minutes>
         or
-        READY
+        <Order#>: ready
         or
-        DELIVERED
+        <Order#>: completed
         or
-        REJECTED:<reason>
+        <Order#>: rejected: <reason>
         to update status`
         const smsRestaurantPromise = sms.sendSMS(restaurantNumber, restaurantMessage);
         //send SMS to restaurant and customer

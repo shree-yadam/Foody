@@ -4,8 +4,12 @@
  *   these routes are mounted onto /api/restaurants
  * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
  */
+const sms = require('../lib/sms/receiveSMS');
 
 module.exports = (router, db) => {
+
+  router.post("/sms/", sms.handleSMSReceived);
+
   router.get("/login/", (req, res) => {
     // DISPLAY RESTAURANT LOGIN FORM
     if (req.session.restaurantId) {
