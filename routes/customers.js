@@ -93,7 +93,6 @@ module.exports = (router, db) => {
         return db.addCustomer({name, phonenumber, email, password});
       }
       else{
-        console.log("customer exists");
         res
             .status(403)
             .send("Email already in use!!");
