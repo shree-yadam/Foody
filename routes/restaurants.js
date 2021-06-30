@@ -18,7 +18,6 @@ module.exports = (router, db) => {
     }
     // TBD RENDER LOGIN PAGE
     // res.render("restaurant_login");
-    //Display customer login form
     res.send("restaurant login");
   });
 

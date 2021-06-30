@@ -15,7 +15,7 @@ const RESTAURANT_ID = 1;
 module.exports = (router, db) => {
 
   //Display login/register form
-  router.get("/login_register/", (req, res) => {
+  router.get("/login_register", (req, res) => {
     if (req.session.customerId) {
       res.redirect("/api/menu");
       return;
@@ -57,8 +57,41 @@ module.exports = (router, db) => {
   });
 
   //TBD:: STRETCH Customer can edit order using link provided as long as status is requested
-  router.get("/:id/order/:order_id", (req, res) => {
+  router.get("/:id/orders/:order_id", (req, res) => {
 
+  });
+
+  router.get("/:id/order", (req,res) => {
+    const customerId = req.params.id;
+    db.getOrderDetailsAndCustomerAndRestaurantFromOrderId(customerId)
+    .then(orderItems => {
+
+      // Render page for user
+      const total_price = orderItems[0].total_price;
+      const order_id = orderItems[0].id;
+      const customerName = orderItems[0].name;
+      const menuDetails = [];
+      for (let i = 0; i < orderItems.length; i++) {
+        const menuItem = {};
+        menuItem.name = orderItems[i].item_name;
+        menuItem.unit_price = orderItems[i].unit_price;
+        menuItem.quantity = orderItems[i].quantity;
+        menuItem.order_price = orderItems[i].order_price;
+        menuDetails.push(menuItem);
+      }
+      const templateVars = {
+        customerId,
+        order_id,
+        total_price,
+        customerName,
+        menuDetails
+      };
+      res.render("order_placed", templateVars);
+    })
+    .catch(e => {
+      console.error(e);
+      res.send(e);
+    });
   });
 
   //Login request
@@ -83,7 +116,7 @@ module.exports = (router, db) => {
   });
 
   //Submit new registration
-  router.post("/register/", (req, res) => {
+  router.post("/register", (req, res) => {
     //Add customer details to DB and display order menu
     db.getCustomerWithEmail(req.body.email)
     .then(customer => {
@@ -112,7 +145,7 @@ module.exports = (router, db) => {
   });
 
   //Logout
-  router.post("/logout/", (req, res) => {
+  router.post("/logout", (req, res) => {
     //TBD Check Functionality
     req.session = null;
     res.redirect("/");
@@ -138,28 +171,7 @@ module.exports = (router, db) => {
         return db.getOrderDetailsAndCustomerAndRestaurantFromOrderId(order.id);
       })
       .then(customer_order_restaurant => {
-        // Render page for user
-        const total_price = customer_order_restaurant[0].total_price;
-        const customerId = req.session.customerId;
-        const order_id = customer_order_restaurant[0].id;
-        const customerName = customer_order_restaurant[0].name;
-        const menuDetails = [];
-        for (let i = 0; i < customer_order_restaurant.length; i++) {
-          const menuItem = {};
-          menuItem.name = customer_order_restaurant[i].item_name;
-          menuItem.unit_price = customer_order_restaurant[i].unit_price;
-          menuItem.quantity = customer_order_restaurant[i].quantity;
-          menuItem.order_price = customer_order_restaurant[i].order_price;
-          menuDetails.push(menuItem);
-        }
-        const templateVars = {
-          customerId,
-          order_id,
-          total_price,
-          customerName,
-          menuDetails
-        };
-        res.render("order_placed", templateVars);
+        res.redirect(`/api/customers/${req.session.customerId}/order`)
         //Send Customer SMS
         const customerNumber = customer_order_restaurant[0].phone_number;
         const customerMessage = `
