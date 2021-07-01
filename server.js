@@ -27,7 +27,7 @@ const restaurantDb = require('./lib/database/restaurant_queries');
 app.use(morgan('dev'));
 
 app.set("view engine", "ejs");
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use("/styles", sass({
   src: __dirname + "/styles",
   dest: __dirname + "/public/styles",
@@ -49,13 +49,49 @@ const menuRoutes = require("./routes/menu");
 
 // Mount all resource routes
 app.use("/api/customers", customersRoutes(router, customerDb));
-app.use("/api/restaurants", restaurantsRoutes(router, restaurantDb));
 app.use("/api/menu", menuRoutes(router, menuDb, customerDb));
+app.use("/api/restaurants", restaurantsRoutes(router, restaurantDb));
 
 
 // Home page
 app.get("/", (req, res) => {
-  res.redirect("/api/menu");
+  req.session.restaurantId = null;
+  let customerId = null;
+  if (req.session.customerId) {
+    customerId = req.session.customerId;
+    const promise1 = customerDb.getCustomerWithId(customerId);
+    const promise2 = restaurantDb.getAllRestaurants();
+    Promise.all([promise1,promise2])
+    .then(data => {
+      const customerName = data[0].name;
+      const restaurants = data[1];
+      const templateVars = {
+        customerId,
+        customerName,
+        restaurants
+      }
+      res.render("restaurantList", templateVars);
+      return;
+    })
+    .catch(e => {
+      console.log(e);}
+      );
+  } else {
+  restaurantDb.getAllRestaurants()
+    .then(restaurants => {
+      let customerName = null;
+      const templateVars = {
+        customerId,
+        customerName,
+        restaurants
+      }
+      res.render("restaurantList", templateVars);
+      return;
+    })
+    .catch(e => {
+      console.log(e);
+    });
+  }
 });
 
 app.listen(PORT, () => {

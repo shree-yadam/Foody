@@ -22,8 +22,12 @@ module.exports = (router, db) => {
     }
     //Display customer login form
     let customerId = req.session.customerId;
+    const loginError = false;
+    const registerError = false;
     const templateVars = {
-      customerId
+      customerId,
+      loginError,
+      registerError
     };
     res.render("login_register_form", templateVars);
   });
@@ -31,30 +35,36 @@ module.exports = (router, db) => {
   //get past/curr order for customer
   router.get("/:id/orders", (req, res) => {
     const customerId = req.params.id;
-    db.getCurrentOrderAndItems(customerId)
-      .then(currOrders => {
+    const promise1 = db.getCurrentOrderAndItems(customerId);
+    const promise2 = db.getPastOrderAndItems(customerId);
+    const promise3 = db.getCustomerWithId(customerId);
+    Promise.all([promise1, promise2, promise3])
+      .then(data => {
+        const currOrders = data[0];
+        const pastOrders = data[1];
+        const customer = data[2];
         const currOrdersArr = _.toPairs(_.groupBy(currOrders, (order) => order.id))
           .sort((a, b) => b[0] - a[0])
           .map(order => order[1]);
-        db.getPastOrderAndItems(customerId)
-          .then(pastOrders => {
-            const pastOrdersArr = _.toPairs(_.groupBy(pastOrders, (order) => order.id))
-              .sort((a, b) => b[0] - a[0])
-              .map(order => order[1]);
-            db.getCustomerWithId(customerId)
-              .then(customer => {
-                const customerName = customer.name;
-                const templateVars = {
-                  currOrdersArr,
-                  pastOrdersArr,
-                  customerId,
-                  customerName
-                };
-                res.render("orders", templateVars);
-              });
-          });
-      });
+        const pastOrdersArr = _.toPairs(_.groupBy(pastOrders, (order) => order.id))
+          .sort((a, b) => b[0] - a[0])
+          .map(order => order[1]);
+        const customerName = customer.name;
+        const templateVars = {
+          currOrdersArr,
+          pastOrdersArr,
+          customerId,
+          customerName
+        };
+        res.render("orders", templateVars);
+      })
+      .catch(e => console.log(e));
   });
+
+  // router.get("/:id/restaurants/:restaurantId", (req, res) => {
+  //   req.session.restaurantId = req.params.restaurantId;
+
+  // });
 
   //TBD:: STRETCH Customer can edit order using link provided as long as status is requested
   router.get("/:id/orders/:order_id", (req, res) => {
@@ -63,20 +73,24 @@ module.exports = (router, db) => {
 
   router.get("/:id/order", (req, res) => {
     const customerId = req.params.id;
-    db.getOrderDetailsAndCustomerAndRestaurantFromOrderId(customerId)
-      .then(orderItems => {
+    db.getLastorderForCustomer(customerId)
+    .then(order => {
+      return db.getOrderDetailsAndCustomerAndRestaurantFromOrderId(order.id)
+
+    })
+    .then(orderItems => {
 
         // Render page for user
-        const total_price = orderItems[0].total_price;
+        const total_price = orderItems[0].total_price/100;
         const order_id = orderItems[0].id;
         const customerName = orderItems[0].name;
         const menuDetails = [];
         for (let i = 0; i < orderItems.length; i++) {
           const menuItem = {};
           menuItem.name = orderItems[i].item_name;
-          menuItem.unit_price = orderItems[i].unit_price;
+          menuItem.unit_price = orderItems[i].unit_price/100;
           menuItem.quantity = orderItems[i].quantity;
-          menuItem.order_price = orderItems[i].order_price;
+          menuItem.order_price = orderItems[i].order_price/100;
           menuDetails.push(menuItem);
         }
         const templateVars = {
@@ -101,17 +115,29 @@ module.exports = (router, db) => {
     db.getCustomerWithEmail(email)
       .then(customer => {
         if (!customer || !bcrypt.compareSync(password, customer.password)) {
-          res
-            .status(403)
-            .send("Invalid credentials!!");
+          const customerId = null;
+          const customerName = null;
+          const loginError = true;
+          const registerError = false;
+          const templateVars = {
+            customerId,
+            customerName,
+            loginError,
+            registerError
+          };
+          res.render("login_register_form", templateVars);
           return;
         }
         req.session.customerId = customer.id;
+        if(req.session.restaurantId) {
+          res.redirect(`/api/menu/${req.session.restaurantId}`);
+          return;
+        }
         res.redirect("/");
       })
       .catch(e => {
         console.error(e);
-        res.send(e);
+        // res.send(e);
       });
   });
 
@@ -126,15 +152,25 @@ module.exports = (router, db) => {
           return db.addCustomer({ name, phonenumber, email, password });
         }
         else {
-          res
-            .status(403)
-            .send("Email already in use!!");
+          const customerId = null;
+          const registerError = true;
+          const loginError = false;
+          const templateVars = {
+            customerId,
+            registerError,
+            loginError
+          };
+          res.render("login_register_form", templateVars);
           return;
         }
       })
       .then(customer => {
         if (customer) {
           req.session.customerId = customer.id;
+          if(req.session.restaurantId) {
+            res.redirect(`/api/menu/${req.session.restaurantId}`);
+            return;
+          }
           res.redirect("/");
         }
       })

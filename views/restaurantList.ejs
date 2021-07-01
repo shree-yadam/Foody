@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Shitual</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    referrerpolicy="no-referrer" />
+
+  <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
+  <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/navbar.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/restaurantList.css" type="text/css" />
+
+  <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
+  <script type="text/javascript" src="/scripts/restaurantList.js"></script>
+</head>
+
+<body>
+  <%= customerId %>
+    <%= customerName %>
+      <%- include('partials/_navbar') %>
+        <%- include('partials/_header') %>
+
+          <form id="restaurant-List" method="GET" action="/api/menu/"></form>
+          <div class="list-group">
+            <% for(let restaurant of restaurants) { %>
+              <div class="restaurant">
+                <div class="restaurant-logo">
+                  <img src="<%= restaurant.logo_url %>">
+                  <input name="restaurantId" value="<%= restaurant.id %>" hidden>
+                </div>
+                <div class="restaurant-details">
+                  <h2>
+                    <%= restaurant.name %>
+                  </h2>
+                  <p class="restaurant-description">
+                    <%= restaurant.description %>
+                  </p>
+                  <p>
+                    <%= restaurant.timings %>
+                  </p>
+                </div>
+                <div class="restaurant-contact">
+                  <h4><em>Contact:</em></h4>
+                  <p>
+                    <%= restaurant.phone_number %>
+                  </p>
+                  <p>
+                    <%= restaurant.email %>
+                  </p>
+                  <p>
+                    <%= restaurant.street %>
+                  </p>
+                  <p>
+                    <%= restaurant.city %>
+                  </p>
+
+                </div>
+
+              </div>
+              <% } %>
+          </div>
+          </form>
+</body>
+
+</html>

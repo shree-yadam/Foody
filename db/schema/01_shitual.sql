@@ -17,6 +17,7 @@ CREATE TABLE customers (
 
 CREATE TABLE restaurants (
   id SERIAL PRIMARY KEY NOT NULL,
+  description VARCHAR(255),
   name VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL,
   password VARCHAR(255) NOT NULL,
@@ -24,7 +25,9 @@ CREATE TABLE restaurants (
   city VARCHAR(255) NOT NULL,
   country VARCHAR(255) NOT NULL,
   phone_number VARCHAR(50) NOT NULL,
-  type_of_cuisine VARCHAR(255)
+  type_of_cuisine VARCHAR(255),
+  logo_url VARCHAR(255) NOT NULL,
+  timings VARCHAR(255)
 );
 
 CREATE TABLE menu_items (

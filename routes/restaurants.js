@@ -10,22 +10,22 @@ module.exports = (router, db) => {
 
   router.post("/sms/", sms.handleSMSReceived);
 
-  router.get("/login/", (req, res) => {
-    // DISPLAY RESTAURANT LOGIN FORM
-    if (req.session.restaurantId) {
-      res.redirect(`/api/restaurants/${req.session.restaurantId}`);
-      return;
-    }
-    // TBD RENDER LOGIN PAGE
-    // res.render("restaurant_login");
-    res.send("restaurant login");
-  });
+  // router.get("/login/", (req, res) => {
+  //   // DISPLAY RESTAURANT LOGIN FORM
+  //   if (req.session.restaurantId) {
+  //     res.redirect(`/api/restaurants/${req.session.restaurantId}`);
+  //     return;
+  //   }
+  //   // TBD RENDER LOGIN PAGE
+  //   // res.render("restaurant_login");
+  //   res.send("restaurant login");
+  // });
 
-  //STRETCH
-  router.get("/register/", (req, res) => {
-    // DISPLAY RESTAURANT REGISTRATION FORM
-    res.send("restaurant registration");
-  });
+  // //STRETCH
+  // router.get("/register/", (req, res) => {
+  //   // DISPLAY RESTAURANT REGISTRATION FORM
+  //   res.send("restaurant registration");
+  // });
 
   router.get("/:id/menu/", (req, res) => {
     //DISPLAY RESTAURANT with id MENU EDIT FORM

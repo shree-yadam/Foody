@@ -1,0 +1,33 @@
+.list-group{
+  margin: auto;
+  width: 70%;
+  padding: 10px;
+  display: flex;
+  .restaurant{
+    border: 1px solid black;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    div{
+      align-self: center;
+      img {
+        width: 200px;
+        height: 200px;
+      }
+    }
+    .restaurant-details{
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 60%;
+      .restaurant-description{
+        color: blue;
+      }
+    }
+    .restaurant-contact{
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+    }
+  }
+}

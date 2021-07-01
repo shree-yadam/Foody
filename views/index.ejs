@@ -24,7 +24,7 @@
 
   <body>
     <%- include('partials/_navbar') %>
-    <%- include('partials/_header') %>
+    <%- include('partials/_headerRestaurant') %>
     <% if (customerId) { %>
       <form class="order-menu" method="POST" action="/api/customers/<%= customerId %>/order">
         <% } %>

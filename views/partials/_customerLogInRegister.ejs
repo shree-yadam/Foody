@@ -1,5 +1,5 @@
 <!-- <form class="formLogIn" method="POST" action="/api/customers/login"> -->
-<form class="formLogIn" id="formLogIn">
+<form class="formLogIn" id="formLogIn" method="POST" action="/api/customers/login">
   <div class="formTitle">Log In</div>
   <div class="form-group">
     <label for="email">Email address</label>
@@ -12,6 +12,7 @@
     <input type="password" class="form-control" name="password" placeholder="Password" required>
   </div>
   <button type="submit" class="btn btn-primary">Login</button>
+  <% if(loginError === true) { %>
   <div class="error" id="login-error">
     <div class="error-text">
       <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
@@ -19,10 +20,11 @@
       <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
     </div>
   </div>
+  <% } %>
 </form>
 
 <!-- <form class="formSignUp" method="POST" action="/api/customers/register"> -->
-<form class="formSignUp" id="fromSignUp">
+<form class="formSignUp" id="fromSignUp" method="POST" action="/api/customers/register">
 <div class="formTitle">Sign Up</div>
 <div class="form-group">
   <label for="name">Full Name</label>
@@ -44,6 +46,7 @@
     placeholder="Format: +1234567890" required>
 </div>
 <button type="submit" class="btn btn-primary">Sign up</button>
+<% if(registerError) { %>
 <div class="error" id="register-error">
   <div class="error-text">
     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
@@ -51,4 +54,5 @@
     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
   </div>
 </div>
+<% } %>
 </form>
