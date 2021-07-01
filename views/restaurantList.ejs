@@ -26,8 +26,6 @@
 </head>
 
 <body>
-  <%= customerId %>
-    <%= customerName %>
       <%- include('partials/_navbar') %>
         <%- include('partials/_header') %>
 
@@ -40,7 +38,7 @@
                   <input name="restaurantId" value="<%= restaurant.id %>" hidden>
                 </div>
                 <div class="restaurant-details">
-                  <h2>
+                  <h2 class="restaurant-name">
                     <%= restaurant.name %>
                   </h2>
                   <p class="restaurant-description">

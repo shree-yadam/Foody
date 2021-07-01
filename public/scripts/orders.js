@@ -8,7 +8,18 @@ const pastOrderClickHandler = () => {
     }
   });
 }
+const currentOrderClickHandler = () => {
+  $('#currentOrder').on('click', () => {
+    const orderLists = $('.currentOrdersContainer');
+    if (orderLists[0].style.display !== "block") {
+      orderLists.slideDown("slow");
+    } else {
+      orderLists.slideUp("slow");
+    }
+  });
+}
 
 $(document).ready(() => {
   pastOrderClickHandler();
+  currentOrderClickHandler();
 });

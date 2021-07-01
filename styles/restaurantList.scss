@@ -1,6 +1,6 @@
 .list-group{
   margin: auto;
-  width: 70%;
+  width: 60%;
   padding: 10px;
   display: flex;
   .restaurant{
@@ -19,15 +19,29 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      padding-left: 20px;
       width: 60%;
-      .restaurant-description{
-        color: blue;
+      h2{
+        padding-bottom: 20px;
       }
+    }
+    .restaurant-description{
+      color: blue;
     }
     .restaurant-contact{
       display: flex;
       flex-direction: column;
       justify-content: space-evenly;
     }
+    :hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.restaurant-name{
+  :hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
   }
 }

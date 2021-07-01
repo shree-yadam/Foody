@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt');
-//HARD CODED RESTAURANT ID TO BEGIN
 
 module.exports = (router, db, customerDb) => {
   router.get("/:restaurantId", (req, res) => {

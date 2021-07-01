@@ -12,9 +12,6 @@ const cookieSession = require('cookie-session');
 
 const router = express.Router();
 
-//TBD :HARD CODED RESTAURANT ID TO BEGIN
-const RESTAURANT_ID = 1;
-
 //Database changes
 const menuDb = require('./lib/database/menu_queries');
 const customerDb = require('./lib/database/customer_queries');

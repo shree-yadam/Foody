@@ -9,9 +9,6 @@ const sms = require('../lib/sms/sendSMS');
 const SALT_ROUNDS = 10;
 const _ = require('lodash');
 
-//TBD :HARD CODED RESTAURANT ID TO BEGIN
-const RESTAURANT_ID = 1;
-
 module.exports = (router, db) => {
 
   //Display login/register form
@@ -67,9 +64,9 @@ module.exports = (router, db) => {
   // });
 
   //TBD:: STRETCH Customer can edit order using link provided as long as status is requested
-  router.get("/:id/orders/:order_id", (req, res) => {
+  // router.get("/:id/orders/:order_id", (req, res) => {
 
-  });
+  // });
 
   router.get("/:id/order", (req, res) => {
     const customerId = req.params.id;
@@ -84,6 +81,7 @@ module.exports = (router, db) => {
         const total_price = orderItems[0].total_price/100;
         const order_id = orderItems[0].id;
         const customerName = orderItems[0].name;
+        const restaurantName = orderItems[0].restaurant_name;
         const menuDetails = [];
         for (let i = 0; i < orderItems.length; i++) {
           const menuItem = {};
@@ -98,6 +96,7 @@ module.exports = (router, db) => {
           order_id,
           total_price,
           customerName,
+          restaurantName,
           menuDetails
         };
         res.render("order_placed", templateVars);
@@ -137,7 +136,6 @@ module.exports = (router, db) => {
       })
       .catch(e => {
         console.error(e);
-        // res.send(e);
       });
   });
 
@@ -196,7 +194,7 @@ module.exports = (router, db) => {
       res.send("InvalidEntry");
       return;
     }
-    db.createOrderForCustomerForRestaurant(req.session.customerId, RESTAURANT_ID, itemIds, quantities)
+    db.createOrderForCustomerForRestaurant(req.session.customerId, req.session.restaurantId, itemIds, quantities)
       .then(order => {
         return db.addOrderItemsForOrderId(order.id, itemIds, quantities);
       })
@@ -212,7 +210,7 @@ module.exports = (router, db) => {
         const customerNumber = customer_order_restaurant[0].phone_number;
         const customerMessage = `
         Dear, ${customer_order_restaurant[0].name},
-        your order #${customer_order_restaurant[0].id} has been sent to the restaurant. Your total amount due at the time of pickup is $${customer_order_restaurant[0].total_price / 100}. You will be updated about the status soon. Thanks!`
+        your order #${customer_order_restaurant[0].id} has been sent to ${customer_order_restaurant[0].restaurant_name}. Your total amount due at the time of pickup is $${customer_order_restaurant[0].total_price / 100}. You will be updated about the status soon. Thanks!`
         const smsCustomerPromise = sms.sendSMS(customerNumber, customerMessage);
         const restaurantNumber = customer_order_restaurant[0].restaurant_phone_number;
         //prepare restaurant message
@@ -226,13 +224,13 @@ module.exports = (router, db) => {
           `;
         }
         restaurantMessage += `Respond as any of following messages:
-        <Order#>: accepted: <time_expected_minutes>
+        ${customer_order_restaurant[0].id}: accepted: <time_expected_minutes>
         or
-        <Order#>: ready
+        ${customer_order_restaurant[0].id}: ready
         or
-        <Order#>: completed
+        ${customer_order_restaurant[0].id}: completed
         or
-        <Order#>: rejected: <reason>
+        ${customer_order_restaurant[0].id}: rejected: <reason>
         to update status`
         const smsRestaurantPromise = sms.sendSMS(restaurantNumber, restaurantMessage);
         //send SMS to restaurant and customer
