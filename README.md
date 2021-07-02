@@ -1,4 +1,4 @@
-# Shitual
+# HOSH
 =========
 
 This project has been developed as midterm project for Lighthouse Labs Bootcamp. This a food ordering service app. Food can be ordered from any of the multiple restaurants enrolled with the app. Customer has to login to place and order. Past and current orders can be accessed. When an order is placed by the customer, an SMS update is sent to the customer and the restaurant. The restaurant can update the status of the order through SMS. Customer will in turn receive these updates.
